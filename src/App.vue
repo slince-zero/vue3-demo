@@ -25,13 +25,12 @@
       border
     >
       <el-table-column type="selection" width="55" />
-      <el-table-column fixed prop="date" label="Date" width="150" />
-      <el-table-column prop="name" label="Name" width="120" />
-      <el-table-column prop="state" label="State" width="120" />
-      <el-table-column prop="city" label="City" width="120" />
-      <el-table-column prop="address" label="Address" width="600" />
-      <el-table-column prop="zip" label="Zip" width="120" />
-      <el-table-column fixed="right" label="Operations" width="120">
+      <el-table-column prop="name" label="姓名" width="120" />
+      <el-table-column prop="email" label="邮箱" width="120" />
+      <el-table-column prop="phone" label="电话" width="120" />
+      <el-table-column prop="state" label="状态" width="120" />
+      <el-table-column prop="add" label="地址" width="210" />
+      <el-table-column fixed="right" label="操作" width="120">
         <template #default>
           <el-button
             link
@@ -41,13 +40,16 @@
             style="color: red"
             >删除</el-button
           >
-          <el-button link type="primary" size="small">添加</el-button>
+          <el-button link type="primary" size="small">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- dialog -->
-    <el-dialog v-model="dialogFormVisible" title="添加信息">
+    <el-dialog
+      v-model="dialogFormVisible"
+      :title="dialogType === 'add' ? '添加信息' : '修改信息'"
+    >
       <el-form :model="form">
         <el-form-item label="姓名" :label-width="80">
           <el-input v-model="tableForm.name" autocomplete="off" />
@@ -68,9 +70,7 @@
 
       <template #footer>
         <span class="dialog-footer">
-          <el-button type="primary" @click="dialogFormVisible = false">
-            确认
-          </el-button>
+          <el-button type="primary" @click="dialogConfirm"> 确认 </el-button>
         </span>
       </template>
     </el-dialog>
@@ -82,42 +82,39 @@ import { ref } from "vue";
 
 // 数据
 let queryInput = ref("");
+
 let tableData = ref([
   {
-    date: "2016-05-03",
+    id: "1",
     name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Home",
+    email: "123@gamil.com",
+    phone: "122332",
+    state: "家里蹲",
+    add: "北京",
   },
   {
-    date: "2016-05-02",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
+    id: "2",
+    name: "Kimi",
+    email: "123@gamil.com",
+    phone: "122332",
+    state: "上学",
+    add: "天津",
   },
   {
-    date: "2016-05-04",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Home",
+    id: "3",
+    name: "Jenny",
+    email: "123@gamil.com",
+    phone: "122332",
+    state: "打工人",
+    add: "上海",
   },
   {
-    date: "2016-05-01",
-    name: "Tom",
-    state: "California",
-    city: "Los Angeles",
-    address: "No. 189, Grove St, Los Angeles",
-    zip: "CA 90036",
-    tag: "Office",
+    id: "4",
+    name: "Whate",
+    email: "123@gamil.com",
+    phone: "122332",
+    state: "刚出生",
+    add: "河北",
   },
 ]);
 let multipleSelection = ref([]);
@@ -129,6 +126,7 @@ let tableForm = ref({
   state: "在职",
   add: "北京",
 });
+let dialogType = ref("add");
 
 //方法
 let handleClick = () => {
@@ -141,9 +139,21 @@ const handleSelectionChange = (val) => {
   console.log(val);
 };
 
-//
+//添加
 let handleAdd = () => {
   dialogFormVisible.value = true;
+  tableForm.value = {};
+};
+let dialogConfirm = () => {
+  dialogFormVisible.value = false;
+  // 1. 拿到数据
+
+  // 2. 添加到title
+  tableData.value.push({
+    id: (tableData.value.length + 1).toString(),
+    ...tableForm.value,
+  });
+  console.log(tableData);
 };
 </script>
 
