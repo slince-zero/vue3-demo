@@ -11,6 +11,7 @@
       <el-input
         class="query-input"
         v-model="queryInput"
+        @click="handleQueryNmae"
         placeholder="请输入姓名搜索"
       ></el-input>
       <div class="button-list">
@@ -133,6 +134,8 @@ let tableData = ref([
     add: "河北",
   },
 ]);
+
+let tableCopy = Object.assign(tableData);
 let multipleSelection = ref([]);
 let dialogFormVisible = ref(false);
 let tableForm = ref({
@@ -145,6 +148,16 @@ let tableForm = ref({
 let dialogType = ref("add");
 
 /**方法 */
+//搜索
+let handleQueryNmae = (val) => {
+  if (val.length > 0) {
+    tableData.value = tableData.value.filter((item) =>
+      item.name.toLowerCase().match(val.toLowerCase())
+    );
+  } else {
+    tableData = tableCopy;
+  }
+};
 //修改
 let handleEdit = (row) => {
   dialogFormVisible.value = true;
