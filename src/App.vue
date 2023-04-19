@@ -3,17 +3,24 @@
     <div>
       <!-- 标题 -->
       <div class="title">
-        <h2>CRUD Demo</h2>
+        <h2>CRUD DEMO</h2>
       </div>
     </div>
     <!-- query-box -->
     <div class="query-box">
       <el-input v-model="queryInput" placeholder="请输入姓名搜索"></el-input>
-      <el-button type="primary">Primary</el-button>
+      <el-button type="primary">添加</el-button>
     </div>
 
     <!-- table -->
-    <el-table :data="tableData" style="width: 100%">
+    <el-table
+      ref="multipleTableRef"
+      :data="tableData"
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+      border
+    >
+      <el-table-column type="selection" width="55" />
       <el-table-column fixed prop="date" label="Date" width="150" />
       <el-table-column prop="name" label="Name" width="120" />
       <el-table-column prop="state" label="State" width="120" />
@@ -75,10 +82,17 @@ let tableData = ref([
     tag: "Office",
   },
 ]);
+let multipleSelection = ref([]);
 
 //方法
 let handleClick = () => {
   console.log("llll");
+};
+
+//多选
+const handleSelectionChange = (val) => {
+  multipleSelection.value = val;
+  console.log(val);
 };
 </script>
 
@@ -89,5 +103,18 @@ let handleClick = () => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.title {
+  text-align: center;
+}
+
+.query-box {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.el-input {
+  width: 200px;
 }
 </style>
