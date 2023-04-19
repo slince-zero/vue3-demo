@@ -13,7 +13,16 @@
         v-model="queryInput"
         placeholder="请输入姓名搜索"
       ></el-input>
-      <el-button type="primary" @click="handleAdd">添加</el-button>
+      <div class="button-list">
+        <el-button
+          type="primary"
+          @click="handleDelAll"
+          style="background-color: red"
+          v-if="multipleSelection.length > 0"
+          >全部删除</el-button
+        >
+        <el-button type="primary" @click="handleAdd">添加</el-button>
+      </div>
     </div>
 
     <!-- table -->
@@ -31,16 +40,22 @@
       <el-table-column prop="state" label="状态" width="120" />
       <el-table-column prop="add" label="地址" width="210" />
       <el-table-column fixed="right" label="操作" width="120">
-        <template #default>
+        <template #default="scope">
           <el-button
             link
             type="primary"
             size="small"
-            @click="handleClick"
+            @click="handleClickDel(scope.row)"
             style="color: red"
             >删除</el-button
           >
-          <el-button link type="primary" size="small">编辑</el-button>
+          <el-button
+            link
+            type="primary"
+            size="small"
+            @click="handleEdit(scope.row)"
+            >编辑</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -78,6 +93,7 @@
 </template>
 
 <script setup>
+import { Loading } from "element-plus/es/components/loading/src/service";
 import { ref } from "vue";
 
 // 数据
@@ -128,32 +144,57 @@ let tableForm = ref({
 });
 let dialogType = ref("add");
 
-//方法
-let handleClick = () => {
-  console.log("llll");
+/**方法 */
+//修改
+let handleEdit = (row) => {
+  dialogFormVisible.value = true;
+  dialogType = "edit";
+  tableForm.value = { ...row };
 };
 
+//单条删除
+let handleClickDel = ({ id }) => {
+  let index = tableData.value.findIndex((item) => item.id === id);
+  tableData.value.splice(index, 1);
+};
+//多选删除
+let handleDelAll = () => {
+  multipleSelection.forEach((id) => {
+    handleClickDel({ id });
+  });
+};
 //多选
 const handleSelectionChange = (val) => {
-  multipleSelection.value = val;
-  console.log(val);
+  multipleSelection = [];
+  val.forEach((item) => {
+    multipleSelection.push(item.id);
+  });
 };
 
 //添加
 let handleAdd = () => {
   dialogFormVisible.value = true;
   tableForm.value = {};
+  dialogType = "add";
 };
 let dialogConfirm = () => {
   dialogFormVisible.value = false;
-  // 1. 拿到数据
 
-  // 2. 添加到title
-  tableData.value.push({
-    id: (tableData.value.length + 1).toString(),
-    ...tableForm.value,
-  });
-  console.log(tableData);
+  if (dialogType === "add") {
+    //添加到title
+    tableData.value.push({
+      id: (tableData.value.length + 1).toString(),
+      ...tableForm.value,
+    });
+  } else {
+    //1.获取当前这条数据索引值
+    let index = tableData.value.findIndex(
+      (item) => item.id === tableForm.value.id
+    );
+
+    //2.替换当前索引对应的数据
+    tableData.value[index] = tableForm.value;
+  }
 };
 </script>
 
