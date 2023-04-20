@@ -149,13 +149,16 @@ let dialogType = ref("add");
 
 /**方法 */
 //搜索
-let handleQueryNmae = (val) => {
-  if (val.length > 0) {
+let handleQueryNmae = () => {
+  // tableData.value = tableData.value.filter((item) =>
+  //   item.name.match(queryInput.value)
+  // );
+  if (queryInput.value.length > 0) {
     tableData.value = tableData.value.filter((item) =>
-      item.name.toLowerCase().match(val.toLowerCase())
+      item.name.toLowerCase().match(queryInput.value.toLowerCase())
     );
   } else {
-    tableData = tableCopy;
+    tableData.value = tableCopy.value;
   }
 };
 //修改
